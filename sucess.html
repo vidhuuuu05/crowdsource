@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donation Success</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial; text-align:center; background:#f7f7f7; padding-top:100px; }
+        .box { background:white; display:inline-block; padding:30px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+        h2 { color:#27ae60; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Thank you for your donation!</h2>
+        <p>Your help makes a difference for the {{ report.disaster }} victims.</p>
+        <p>Total donations for this report: <b>₹{{ "%.2f"|format(report.total_donations) }}</b></p>
+        <a href="/">← Go back home</a>
+    </div>
+</body>
+</html>

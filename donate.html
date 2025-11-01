@@ -17,20 +17,15 @@
     <p><b>Location:</b> {{ report.location }}</p>
     <p><b>Description:</b> {{ report.description }}</p>
     <p>💰 <b>Collected so far:</b> ₹{{ "%.2f"|format(report.total_donations) }}</p>
-
     <form method="POST" action="/donate/{{ report.id }}">
         <label>Your Name:</label>
         <input type="text" name="donor_name" required>
-
         <label>Amount (₹):</label>
         <input type="number" name="amount" min="1" required>
-
         <label>Message (optional):</label>
         <textarea name="message"></textarea>
-
         <button type="submit">Donate Now</button>
     </form>
-
     <p style="text-align:center;margin-top:15px;"><a href="/">← Back to Reports</a></p>
 </body>
 </html>
