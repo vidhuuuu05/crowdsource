@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Disaster Management System</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<style>
+    body { font-family: Arial; background-color: #f8f9fa; padding: 20px; margin: 0; }
+    h1 { color: #2c3e50; }
+    form { background: white; padding: 20px; border-radius: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
+    input, textarea, select { width: 100%; padding: 8px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #27ae60; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px; }
+    .report { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .donate-btn { background: #e67e22; color: white; padding: 8px 10px; text-decoration: none; border-radius: 5px; }
+    #map { height: 400px; width: 100%; margin-top: 20px; border-radius: 10px; }
+</style>
+</head>
+<body>
+    <h1>Disaster Management System</h1>
+
+    <form method="POST" action="/report">
+        <label>Your Name:</label>
+        <input type="text" name="name" required>
+
+        <label>Disaster Type:</label>
+        <select name="disaster" required>
+            <option>Flood</option>
+            <option>Earthquake</option>
+            <option>Fire</option>
+            <option>Accident</option>
+            <option>Cyclone</option>
+        </select>
+
+        <label>Location:</label>
+        <input type="text" name="location" required placeholder="e.g., Hyderabad, India">
+
+        <label>Description:</label>
+        <textarea name="description" required></textarea>
+
+        <button type="submit">Submit Report</button>
+    </form>
+
+    <h2>Recent Reports</h2>
+    {% for r in reports %}
+        <div class="report">
+            <strong>{{ r.disaster }}</strong> reported by {{ r.name }}<br>
+            📍 Location: {{ r.location }}<br>
+            📝 {{ r.description }}<br>
+            💰 <b>Total Donations:</b> ₹{{ "%.2f"|format(r.total_donations) }}<br><br>
+            <a href="/donate/{{ r.id }}" class="donate-btn">Donate Now</a>
+        </div>
+    {% endfor %}
+
+    <h2>🗺️ Disaster Map</h2>
+    <div id="map"></div>
+
+    <script id="reports-data" type="application/json">
+        {{ report_data | tojson }}
+    </script>
+
+    <script>
+        const reports = JSON.parse(document.getElementById('reports-data').textContent);
+
+        const map = L.map('map').setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        reports.forEach(r => {
+            if (r.latitude && r.longitude) {
+                const lat = parseFloat(r.latitude);
+                const lon = parseFloat(r.longitude);
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const marker = L.marker([lat, lon]).addTo(map);
+                    const popupHtml = `<b>${r.disaster}</b><br>${r.location}<br><i>₹${Number(r.total_donations || 0).toFixed(2)}</i>`;
+                    marker.bindPopup(popupHtml);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

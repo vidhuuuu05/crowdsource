@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donate for {{ report.disaster }}</title>
+<style>
+    body { font-family: Arial; background-color: #f7f7f7; padding: 20px; }
+    form { background: white; padding: 20px; border-radius: 10px; width: 100%; max-width: 400px; margin:auto; }
+    input, textarea { width: 100%; padding: 8px; margin: 8px 0; border:1px solid #ccc; border-radius:5px; }
+    button { background: #27ae60; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px; width:100%; }
+    h2 { text-align:center; color:#2c3e50; }
+</style>
+</head>
+<body>
+    <h2>Donate for {{ report.disaster }}</h2>
+    <p><b>Location:</b> {{ report.location }}</p>
+    <p><b>Description:</b> {{ report.description }}</p>
+    <p>💰 <b>Collected so far:</b> ₹{{ "%.2f"|format(report.total_donations) }}</p>
+
+    <form method="POST" action="/donate/{{ report.id }}">
+        <label>Your Name:</label>
+        <input type="text" name="donor_name" required>
+
+        <label>Amount (₹):</label>
+        <input type="number" name="amount" min="1" required>
+
+        <label>Message (optional):</label>
+        <textarea name="message"></textarea>
+
+        <button type="submit">Donate Now</button>
+    </form>
+
+    <p style="text-align:center;margin-top:15px;"><a href="/">← Back to Reports</a></p>
+</body>
+</html>
